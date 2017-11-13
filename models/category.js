@@ -3,11 +3,11 @@ var mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-// create the Schema
+// create the  category Schema
 var categorySchema = new Schema({
 
    
-    category_id:{type:String},
+    category_id:{type:Number},
     category_name:{type:String}
   
 
@@ -17,5 +17,5 @@ var categorySchema = new Schema({
 // we need to create a model for using schema
 var Category = mongoose.model('categorys', categorySchema);
 
-// make this available to our employee in our Node applications
+// make this available to our customers in our Node applications
 module.exports = Category;

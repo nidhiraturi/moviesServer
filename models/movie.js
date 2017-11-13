@@ -7,7 +7,7 @@ var Schema = mongoose.Schema;
 var movieSchema = new Schema({
 
    
-    category_id:{type:String},
+    category_id:{type:Number},
     movieId:{type:Number},
     movieName:{type:String},
     movieImagePath:{type:String}

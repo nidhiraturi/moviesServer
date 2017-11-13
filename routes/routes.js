@@ -2,54 +2,102 @@
 var express = require('express');
 var router = express.Router();
 var customerController = require('../controllers/customerController');
-var productController=require('../controllers/productController');
-var moviesController=require('../controllers/moviesController');
+var moviesController = require('../controllers/moviesController');
 
 
 //api for posting the data of employee
 router.route('/v1/createTempuser')
     .post(customerController.postTempUsers);
 
-    router.route('/v1/createuser')
+//api to post verified user
+router.route('/v1/createuser')
     .post(customerController.postUser);
-router.route('/v1/product/create')
-    .post(productController.postProduct);
-    router.route('/v1/Customer/postBill')
-    .post(customerController.postCustomerBill);
-//api for getting the all employees from the db
+
+//api for getting the all customers from the db
 router.route('/v1/getAllCustomers')
     .get(customerController.getAllCustomers);
+
 //api to find user with username
 router.route('/v1/getCustomer')
     .post(customerController.postUsername);
 
-    router.route('/v1/getallproducts')
-    .get(productController.getAllProducts);
-    //get all movies
-    router.route('/v1/getMoviesByCategory')
+
+//get all movies
+router.route('/v1/getMoviesByCategory')
     .post(moviesController.getMoviesByCategory);
 
-    router.route('/v1/createmovie')
-    .post(moviesController.postMovie);
 
-    router.route('/v1/getallcategories')
+//get all series
+router.route('/v1/getseriesbyid')
+    .post(moviesController.getSeriesByCategory);
+
+
+
+//Administration
+
+//delete movie
+router.route('/v1/admin/deletemovie/:movieId')
+    .delete(moviesController.deleteMovie);
+
+//delete series
+router.route('/v1/admin/deleteseries/:seriesId')
+    .delete(moviesController.deleteSeries);
+
+//delete seasons
+router.route('/v1/admin/deleteseason/:seasonId')
+    .delete(moviesController.deleteSeasons);
+
+//delete episode
+router.route('/v1/admin/deleteepisode/:seasonId')
+    .delete(moviesController.deleteEpisode);
+
+//get season by series
+router.route('/v1/getSeasonBySeries')
+    .post(moviesController.getSeasonBySeries);
+
+//get movie by id
+router.route('/v1/getmoviebyid')
+    .post(moviesController.getMoviesById);
+
+//get all the movies
+router.route('/v1/getallmovies')
+    .get(moviesController.getAllMovies);
+
+//get all the seasons
+router.route('/v1/getallseasons')
+    .get(moviesController.getAllSeasons);
+
+//get series
+router.route('/v1/getallseries')
+    .get(moviesController.getAllSeries);
+
+//get categories
+router.route('/v1/getallcategories')
     .get(moviesController.getAllCategories);
 
-router.route('/v1/postcategory')
+//post Movie
+router.route('/v1/admin/postmovie')
+    .post(moviesController.postMovie);
+
+//post Category 
+router.route('/v1/admin/postcategory')
     .post(moviesController.postCategory);
-    //api for getting the product data from its id
-router.route('/v1/getProduct/:productId')
-.get(productController.getProduct);
 
-router.route('/v1/getProductById')
-.post(productController.getProById);
+//post TV series
+router.route('/v1/admin/postseries')
+    .post(moviesController.postSeries);
 
-router.route('/v1/getProductByCategory')
-.post(productController.getProductByCategory);
+//post TV season
+router.route('/v1/admin/postseason')
+    .post(moviesController.postSeason);
 
+//post TV episodes
+router.route('/v1/admin/postepisode')
+    .post(moviesController.postEpisode);
 
-
-
+//update movie
+router.route('/v1/admin/updatemovie/:movieId')
+    .put(moviesController.updateMovie);
 
 //export the router
 module.exports = router;
