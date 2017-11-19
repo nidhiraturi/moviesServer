@@ -7,8 +7,8 @@ var Schema = mongoose.Schema;
 var categorySchema = new Schema({
 
    
-    category_id:{type:Number},
-    category_name:{type:String}
+    category_id:{type:Number,unique: true},
+    category_name:{type:String,unique: true}
   
 
 

@@ -4,6 +4,8 @@ var Movies = require('../models/movie')
 var Series = require('../models/series')
 var Season = require('../models/seasons')
 var Episode = require('../models/episodes')
+var response1=require('../response');
+
 
 //function to get alll the categories
 exports.getAllCategories = function (req, res) {
@@ -11,10 +13,13 @@ exports.getAllCategories = function (req, res) {
     Category.find({}, function (error, response) {
         console.log("in cat")
         if (error) {
-            return res.json(req, res, error);
+           
+            response1.error1(error,res)
         }
+        response1.success(response,res);
+   
 
-        res.json(response);
+   
 
     });
 }
@@ -25,11 +30,10 @@ exports.getAllMovies = function (req, res) {
     Movies.find({}, function (error, response) {
         console.log("in movie")
         if (error) {
-            return res.json(req, res, error);
+            response1.error1(error,res)
         }
 
-        res.json(response);
-        console.log(response)
+        response1.success(response,res);
     });
 }
 
@@ -39,10 +43,10 @@ exports.getAllSeries = function (req, res) {
     Series.find({}, function (error, response) {
         console.log("in cat")
         if (error) {
-            return res.json(req, res, error);
+            response1.error1(error,res)
         }
 
-        res.json(response);
+        response1.success(response,res)
 
     });
 }
@@ -53,37 +57,41 @@ exports.getAllSeasons = function (req, res) {
     Season.find({}, function (error, response) {
         console.log("in cat")
         if (error) {
-            return res.json(req, res, error);
+            response1.error1(error,res)
         }
 
-        res.json(response);
+        response1.success(response,res)
 
     });
 }
 
 //function to get all the movies according to category id
 exports.getMoviesByCategory = function (req, res) {
-    
+
     var myarray = [];
     console.log("in final")
     console.log(req.body.categoryId)
     categoryId = req.body.categoryId;
     Movies.find({ category_id: categoryId }, function (error, response) {
 
-        if (error) {
-            return res.json(req, res, error);
+        if(response.length==0)
+        {
+            response1.error1(error,res)   
+        }
+       else if (error) {
+            response1.error1(error,res)
         }
 
-        res.json(response);
+        response1.success(response,res)
 
     });
-    
-    
-} 
+
+
+}
 
 //function to get all the series according category id
 exports.getSeriesByCategory = function (req, res) {
-    
+
     var myarray = [];
     console.log("in final")
     console.log(req.body.categoryId)
@@ -93,21 +101,25 @@ exports.getSeriesByCategory = function (req, res) {
 
     Series.find({ category_id: categoryId }, function (error, response) {
 
-        if (error) {
-            return res.json(req, res, error);
+        if(response.length==0)
+        {
+            response1.error1(error,res)   
+        }
+       else if (error) {
+            response1.error1(error,res)
         }
 
-        res.json(response);
+        response1.success(response,res)
 
     });
-    
-    
-} 
+
+
+}
 
 //function to get all the movies by movie Id
 exports.getMoviesById = function (req, res) {
-    
-    
+
+
     console.log("in final mbyid")
     console.log(req.body.movieId)
     movieId = req.body.movieId;
@@ -115,12 +127,15 @@ exports.getMoviesById = function (req, res) {
 
     //finding customer
     Movies.find({ movieId: movieId }, function (error, response) {
-
-        if (error) {
-            return res.json(req, res, error);
+        if(response.length==0)
+        {
+            response1.error1(error,res)   
+        }
+       else if (error) {
+            response1.error1(error,res)
         }
 
-        res.json(response);
+        response1.success(response,res)
 
     });
     //end of save method
@@ -135,18 +150,22 @@ exports.getSeasonBySeries = function (req, res) {
     seriessId = req.body.seriesType;
 
 
-    
+
     Season.find({ seriesId: seriessId }, function (error, response) {
 
+        if(response.length==0)
+        {
+            response1.error1(error,res)   
+        }
         if (error) {
-            return res.json(req, res, error);
+            response1.error1(error,res)
         }
 
-        res.json(response);
-        console.log(response)
+        response1.success(response,res)
+        
     });
-    
-} 
+
+}
 
 //function to add movie in db(post movie)
 exports.postMovie = function (req, res) {
@@ -166,24 +185,19 @@ exports.postMovie = function (req, res) {
         // handle the error
         console.log("in node", response)
         if (error) {
-            res.json({
-                success: false,
-                body: error
-            });
+            response1.error1(error,res)
         }
         else {
             //send the response to the browser
-            res.json(response);
+            response1.success(response,res)
         }
     });
 }
 
 //post Movie Function and auto genertated id
 exports.postMovie = function (req, res) { // Function to Post the Data in Users Collection of Database
-    Movies.find({}, function (err, response) { // Function to Find all the Users from collection 
-        if (err) {
-            return res.json(req, res, err);
-        }
+    Movies.find({}, function (error, response) { // Function to Find all the Users from collection 
+       
         id = response[0].movieId
         console.log("in postmovie", response)
         var movie = new Movies({ // Making Object of season Schema
@@ -195,15 +209,11 @@ exports.postMovie = function (req, res) { // Function to Post the Data in Users 
         });
         movie.save(function (err, response) { // Saving the Data into the Database
             if (err) {
-                return res.json(req, res, err);
+                response1.error1(error,res)
             }
+            response1.success(response,res)
 
-            res.json({
-                success: true,
-                body: response
-            })
-
-        });
+        })
     }).sort({
         movieId: -1
     }).limit(1);
@@ -212,9 +222,9 @@ exports.postMovie = function (req, res) { // Function to Post the Data in Users 
 
 //function to add categories 
 exports.postCategory = function (req, res) { // Function to Post the Data in Users Collection of Database
-    Category.find({}, function (err, response) { // Function to Find all the Users from collection 
-        if (err) {
-            return res.json(req, res, err);
+    Category.find({}, function (error, response) { // Function to Find all the Users from collection 
+        if (error) {
+            response1.error1(error,res)
         }
         id = response[0].category_id;
 
@@ -229,13 +239,10 @@ exports.postCategory = function (req, res) { // Function to Post the Data in Use
         });
         category.save(function (err, response) { // Saving the Data into the Database
             if (err) {
-                return res.json(req, res, err);
+                response1.error1(err,res)
             }
 
-            res.json({
-                success: true,
-                body: response
-            })
+            response1.success(response,res)
 
         });
     }).sort({
@@ -263,13 +270,10 @@ exports.postSeries = function (req, res) { // Function to Post the Data in Users
         });
         series.save(function (err, response) { // Saving the Data into the Database
             if (err) {
-                return res.json(req, res, err);
+                response1.error1(err,res)
             }
 
-            res.json({
-                success: true,
-                body: response
-            })
+            response1.success(response,res)
 
         });
     }).sort({
@@ -297,13 +301,10 @@ exports.postSeason = function (req, res) { // Function to Post the Data in Users
         });
         season.save(function (err, response) { // Saving the Data into the Database
             if (err) {
-                return res.json(req, res, err);
+                response1.error1(err,res)
             }
 
-            res.json({
-                success: true,
-                body: response
-            })
+            response1.success(response,res)
 
         });
     }).sort({
@@ -335,13 +336,10 @@ exports.postEpisode = function (req, res) { // Function to Post the Data in User
         console.log("in post episode", episode)
         episode.save(function (err, response) { // Saving the Data into the Database
             if (err) {
-                return res.json(req, res, err);
+                response1.error1(err,res)
             }
 
-            res.json({
-                success: true,
-                body: response
-            })
+            response1.success(response,res)
 
         });
     }).sort({
@@ -356,33 +354,23 @@ exports.updateMovie = function (req, res) {
     Movies.findOne({
         movieId: movieId
     }, function (error, mov) {
-      if (error) {
-        res.json(err);
-      }
-  
-      var name = req.body.movieName;
-      
-      mov.movieName = name;
-      
-  
-      mov.save(function (err, response) {
-        if (err) {
-          res.json({
-            status: false,
-            respData: {
-              data: err
-            }
-          });
+        if (error) {
+            response1.error1(error,res)
         }
-        else {
-          res.json({
-            status: true,
-            respData: {
-              data: response
+
+        var name = req.body.movieName;
+
+        mov.movieName = name;
+
+
+        mov.save(function (err, response) {
+            if (err) {
+                response1.error1(err,res)
             }
-          });
-        }
-      })
+            else {
+                response1.success(response,res)
+            }
+        })
     })
 }
 

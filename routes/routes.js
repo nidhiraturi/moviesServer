@@ -22,6 +22,8 @@ router.route('/v1/getCustomer')
     .post(customerController.postUsername);
 
 
+
+
 //get all movies
 router.route('/v1/getMoviesByCategory')
     .post(moviesController.getMoviesByCategory);
@@ -99,5 +101,7 @@ router.route('/v1/admin/postepisode')
 router.route('/v1/admin/updatemovie/:movieId')
     .put(moviesController.updateMovie);
 
+    router.route('/v1/upload/image')
+    .post(customerController.uploadImage);
 //export the router
 module.exports = router;

@@ -2,9 +2,13 @@
 var tempCustomers = require('../models/tempCustomers');
 var CustomerVerified = require('../models/customer');
 var nodemailer = require('nodemailer');
+var response1 = require('../response');
 var atob = require('atob');
 var btoa = require('btoa');
-var md5 = require('md5');
+let jwt = require('jsonwebtoken');
+var password1 = require('../password');
+var multer  = require('multer')
+var response1=require('../response');
 
 //method to create the random number
 function makeid() {
@@ -24,17 +28,17 @@ exports.postUser = function (req, res) { // Function to Post the Data in Users C
   console.log("in final", code)
   tempCustomers.findOne({ code: code }, function (error, response) { // Function to Find all the Users from collection 
     if (error) {
-      return res.json(req, res, error);
+      response1.error1(error,res)
     }
     else {
-      console.log(response.name, "hello")
+    
       var customerVerified = new CustomerVerified({ // Making Object of Users schema 
 
         name: response.name,
         email: response.email,
         mobileNumber: response.mobileNumber,
         userName: response.userName,
-        password: md5(response.password),
+        password: password1.passwordEncryption(response.password),
         typeUser: 2,
         verified: true
 
@@ -44,13 +48,10 @@ exports.postUser = function (req, res) { // Function to Post the Data in Users C
 
       customerVerified.save(function (err, response) { // Saving the Data into the Database
         if (err) {
-          return res.json(req, res, err);
+          response1.error1(err,res)
         }
 
-        res.json({
-          success: true,
-          body: response
-        })
+       response1.success(response,res)
 
       });
 
@@ -62,78 +63,101 @@ exports.postUser = function (req, res) { // Function to Post the Data in Users C
 //method for the login functionality
 
 exports.postUsername = function (req, res) {
-  // creating the new employee
-  username1 = req.body.userName;
-  password1 = md5(req.body.password);
-  console.log(password1);
-  //finding customer
-  CustomerVerified.findOne({ userName: username1, password: password1 }, function (err, response) {
 
-    if (err) {
-      res.json(err);
+  username1 = req.body.userName;
+  password2= password1.passwordEncryption(req.body.password)
+  
+  
+  //finding customer
+  CustomerVerified.findOne({ userName: username1, password: password2 }, function (err, response) {
+     
+  
+    if(err)
+    {
+     response1.error1(err,res)
     }
-    if (response) {
-      res.json({
+
+else 
+{
+  var token = jwt.sign({ "status": "true" }, 'my_app_secret')
+  return  res.json({
         "status": true,
-        "respData": {
-          "data": response
+        "respdata": {
+          "data": response,
+          "token": token
         }
-      });
-    }
-    else {
-      res.json({
-        "status": false,
-        "respData": {
-          "data": "user does not exist"
-        }
-      });
-    }
+
+      })
+}
+
+
+
+
   });
 }
 
 
 // method to get all the registered customers
 exports.getAllCustomers = function (req, res) {
-  Customer.find({}, function (error, response) {
+  CustomerVerified.find({}, function (error, response) {
     if (error) {
-      return res.json(req, res, error);
+      response1.error1(error,res)
     }
     //sending the reponse to the browser
-    res.json(response);
+    response1.success(response,res)
 
   });
-}
 
+
+
+}
+exports.uploadImage = function (req, res)  {
+  
+  var storage = multer.diskStorage({
+      destination: function (req, res, next) {
+          next(null, './images');
+      },
+      filename: function (req, file, next) {
+          next(null, file.originalname + '-' + Date.now() + '.jpg')
+      }
+  });
+  
+  var upload = multer({ storage: storage }).any('image'); 
+  upload(req, res, error=> {
+      if(error) {
+          return res.json(error);
+      }
+      res.json({
+          message: 'Uploaded'
+      })
+  }) 
+}
 // method to post the non verified users
 exports.postTempUsers = function (req, res) {
-  var tempCust = new tempCustomers({
+   var tempCust = new tempCustomers({
     name: req.body.name,
     email: req.body.email,
     mobileNumber: req.body.mobileNumber,
     userName: req.body.userName,
-    password: md5(req.body.password),
+    password: password1.passwordEncryption(req.body.password),
     typeUser: 2,
     code: makeid(),
     verified: false
 
   });
-  console.log("first console")
+  
 
 
   //save the creating customer
   tempCust.save(function (error, response) {
     // handle the error
-    console.log("in node", tempCust)
-    console.log(tempCust.email);
+   
     if (error) {
-      return error;
+     response1.error1(error,res)
     }
     else {
       //send the response to the browser
-      res.json({
-        success: true,
-        body: response
-      });
+      response1.success(response,res)
     }
   });
   // function to send mail to the user
@@ -141,7 +165,7 @@ exports.postTempUsers = function (req, res) {
     service: 'gmail',
     auth: {
       user: 'rraturi.nidhi@gmail.com',
-      pass: 'rohannidhi'
+      pass: 'hbvh'
     }
   });
   code = tempCust.code;
@@ -156,12 +180,15 @@ exports.postTempUsers = function (req, res) {
 
   transporter.sendMail(mailOptions, function (error, info) {
     if (error) {
-      console.log(error);
+      response1.error1(error,res);
     } else {
       console.log('Email sent: ' + info.response);
     }
   });
 }
+
+
+
 
 
 

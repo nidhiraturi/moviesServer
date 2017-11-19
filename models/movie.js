@@ -8,8 +8,8 @@ var movieSchema = new Schema({
 
    
     category_id:{type:Number},
-    movieId:{type:Number},
-    movieName:{type:String},
+    movieId:{type:Number,unique: true},
+    movieName:{type:String,unique: true},
     movieImagePath:{type:String}
 
 
@@ -19,5 +19,5 @@ var movieSchema = new Schema({
 // we need to create a model for using schema
 var Movies = mongoose.model('movie', movieSchema);
 
-// make this available to our employee in our Node applications
+// make this available to our customers in our Node applications
 module.exports = Movies;

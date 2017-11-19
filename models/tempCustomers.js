@@ -7,8 +7,8 @@ var Schema = mongoose.Schema;
 var customerSchema = new Schema({
 
     
-    name: { type: String, unique: true },
-    email: { type: String },
+    name: { type: String },
+    email: { type: String},
     mobileNumber: { type: Number},
     userName:{type:String},
     password:{type:String},
@@ -22,5 +22,5 @@ var customerSchema = new Schema({
 // we need to create a model for using schema
 var Customer = mongoose.model('tempcustomers', customerSchema);
 
-// make this available to our employee in our Node applications
+// make this available to our  customers in our Node applications
 module.exports = Customer;

@@ -8,9 +8,9 @@ var customerVerifiedSchema = new Schema({
 
     
     name: { type: String, unique: true },
-    email: { type: String },
-    mobileNumber: { type: Number},
-    userName:{type:String},
+    email: { type: String,unique: true },
+    mobileNumber: { type: Number,unique: true},
+    userName:{type:String,unique: true},
     password:{type:String},
     typeUser:{type:Number},
     verified:{type:Boolean}
