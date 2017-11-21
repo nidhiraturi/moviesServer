@@ -10,8 +10,8 @@ var movieSchema = new Schema({
     category_id:{type:Number},
     movieId:{type:Number,unique: true},
     movieName:{type:String,unique: true},
-    movieImagePath:{type:String}
-
+    movieImagePath:{type:String},
+    deleted:{type:Boolean,default:false}
 
 
 });

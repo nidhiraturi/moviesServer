@@ -157,7 +157,7 @@ exports.getSeasonBySeries = function (req, res) {
         {
             response1.error1(error,res)   
         }
-        if (error) {
+      else  if (error) {
             response1.error1(error,res)
         }
 
@@ -184,7 +184,11 @@ exports.postMovie = function (req, res) {
     movie.save(function (error, response) {
         // handle the error
         console.log("in node", response)
-        if (error) {
+        if(response.length==0)
+        {
+            response1.error1(error,res)   
+        }
+      else  if (error) {
             response1.error1(error,res)
         }
         else {
@@ -208,7 +212,11 @@ exports.postMovie = function (req, res) { // Function to Post the Data in Users 
 
         });
         movie.save(function (err, response) { // Saving the Data into the Database
-            if (err) {
+            if(response.length==0)
+            {
+                response1.error1(error,res)   
+            }
+           else if (err) {
                 response1.error1(error,res)
             }
             response1.success(response,res)
@@ -375,20 +383,37 @@ exports.updateMovie = function (req, res) {
 }
 
 
+// //function to  delete Movie 
+// exports.deleteMovie = function (req, res) {
+//     var movieId = req.params.movieId;
+//     console.log("in delete", movieId)
+//     Movies.findOne({ movieId: movieId }, function (error, emp) {
+//         if (error) {
+//             res.json(error);
+//         }
+//         Movies.remove({ movieId: movieId }, function (err, qres) {
+//             if (err) {
+//                 res.json(err);
+//             }
+//             res.json("Successfully Deleted");
+//         });
+
+//     });
+// }
+
+
 //function to  delete Movie 
 exports.deleteMovie = function (req, res) {
+
+    console.log("in delete")
     var movieId = req.params.movieId;
     console.log("in delete", movieId)
-    Movies.findOne({ movieId: movieId }, function (error, emp) {
-        if (error) {
-            res.json(error);
+    Movies.update({ movieId: movieId }, {$set: {deleted: true}}, function(err, result) {
+        if(err)
+        {
+            res.json(err)
         }
-        Movies.remove({ movieId: movieId }, function (err, qres) {
-            if (err) {
-                res.json(err);
-            }
-            res.json("Successfully Deleted");
-        });
+        res.json("deleted");
 
     });
 }
